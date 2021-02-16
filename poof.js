@@ -71,7 +71,7 @@ async function start(stream) {
       video.style.position = 'absolute';
       video.style.visibility = 'hidden';
       const buffer = document.createElement('canvas');
-      const buffer2d = canvas.getContext('2d');
+      const buffer2d = buffer.getContext('2d');
       const canvas = document.createElement('canvas');
       const canvas2d = canvas.getContext('2d');
       div.appendChild(canvas);
