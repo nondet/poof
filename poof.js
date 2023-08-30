@@ -115,7 +115,7 @@ async function start(stream) {
 async function addScreen() {
   start(await navigator.mediaDevices.getDisplayMedia({
     audio: false,
-    video: { width: 1024, height: 1024, frameRate },
+    video: { width: 1512, height: 1024, frameRate },
   }));
 }
 
