@@ -121,11 +121,29 @@ async function addScreen() {
 
 // add a video camera
 async function addCamera() {
-  // TODO pick from available cameras
-  start(await navigator.mediaDevices.getUserMedia({
+  const media = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: true,
-  }));
+  });
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const cameras = devices.filter((dev) => dev.kind === 'videoinput');
+  if (cameras.length > 1) {
+    media.getTracks().forEach((track) => track.stop());
+    message.textContent = cameras.map(({ label }, idx) => `${idx+1}) ${label.replace(/ Camera$/, '')}`).join('\n');
+    document.addEventListener('keyup', async (event) => {
+      event.stopImmediatePropagation();
+      message.textContent = '';
+      if (event.code.startsWith('Digit')) {
+        const camera = cameras[parseInt(event.key) - 1];
+        start(await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: { deviceId: camera.deviceId },
+        }));
+      }
+    }, { once: true });
+  } else {
+    start(media);
+  }
 }
 
 // remove all items
@@ -146,7 +164,7 @@ function main() {
       addScreen();
     } else if (state === '+' && event.key === 'c') {
       state = message.textContent = '';
-      // +, v: add video camera
+      // +, c: add video camera
       addCamera();
     } else if (state === '' && event.key === '-') {
       state = message.textContent = '-';
